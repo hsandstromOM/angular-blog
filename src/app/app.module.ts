@@ -1,24 +1,46 @@
+﻿import { NgModule }      from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
-import { ROUTING } from './app.routing';
-import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { ReactiveFormsModule }    from '@angular/forms';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
-import { RootComponent } from './root/root.component';
-import { LoginComponent } from './login/login.component';
+// used to create fake backend
+import { fakeBackendProvider } from './_helpers';
+
+import { AppComponent }  from './app.component';
+import { routing }        from './app.routing';
+
+import { AuthGuard } from './_guards';
+import { JwtInterceptor } from './_helpers';
+import { AuthenticationService, UserService } from './_services';
+import { HomeComponent } from './home';
+import { LoginComponent } from './login';
 
 @NgModule({
-  declarations: [
-  	RootComponent,
-    LoginComponent
-  ],
-  imports: [
-    BrowserModule,
-    ROUTING,
-    FormsModule,
-    HttpClientModule
-  ],
-  providers: [],
-  bootstrap: [RootComponent]
+    imports: [
+        BrowserModule,
+        ReactiveFormsModule,
+        HttpClientModule,
+        routing
+    ],
+    declarations: [
+        AppComponent,
+        HomeComponent,
+        LoginComponent
+    ],
+    providers: [
+        AuthGuard,
+        AuthenticationService,
+        UserService,
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: JwtInterceptor,
+            multi: true
+        },
+
+        // provider used to create fake backend
+        fakeBackendProvider
+    ],
+    bootstrap: [AppComponent]
 })
+
 export class AppModule { }

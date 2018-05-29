@@ -1,10 +1,15 @@
-import { RouterModule, Routes } from '@angular/router';
-import { ModuleWithProviders } from '@angular/core/src/metadata/ng_module';
+﻿import { Routes, RouterModule } from '@angular/router';
 
-import { LoginComponent } from './login/login.component';
+import { HomeComponent } from './home';
+import { LoginComponent } from './login';
+import { AuthGuard } from './_guards';
 
-export const AppRoutes: Routes = [
-    { path: '', component: LoginComponent }
+const appRoutes: Routes = [
+    { path: '', component: HomeComponent, canActivate: [AuthGuard] },
+    { path: 'login', component: LoginComponent },
+
+    // otherwise redirect to home
+    { path: '**', redirectTo: '' }
 ];
 
-export const ROUTING: ModuleWithProviders = RouterModule.forRoot(AppRoutes);
+export const routing = RouterModule.forRoot(appRoutes);
